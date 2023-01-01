@@ -1,0 +1,629 @@
+---
+title: "Bikers Trip"
+author: "Samson Abobarin"
+date: "2022-12-28"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Intoduction
+
+This Is a Capstone Project: Case study that was completed as the final project for the Google Data Analytics Professional Certificate course. The Project is about a fictional Cyclistic Bike Share Company, the aim of this project is to answer the key business questions by following the Six steps of the data analysis process (that is : Ask, Prepare, Process, Analyze, Share and Act) that has been taught in the course.
+
+## About Company
+
+Cyclistic’s started Bike-Share offering in 2016. Since then, the program has grown to a fleet of 5, 824 bicycles that are geotracked and locked into a network of 692 stations across Chicago. Its flexibility of pricing plans has helped Cyclistic’s marketing strategy to depend on building general awareness and appealing to broad consumer segment. The company classified its pricing plans as: single-ride passes, full-day passes and annual memberships. Customers who purchase single-ride or full-day passes are considered as casual riders. Customers who purchase the annual memberships are considered as Cyclistic members. Cyclistic’s finance analysts have discovered that annual members are much more profitable than casual riders. Moreno who is the marketing director believes that increasing the number of annual members will be key for future growth. Rather than creating a marketing campaign that targets all-new customers, Moreno believes there is a very good chance to convert casual riders into members.
+Notes: In this case Study, I will be following the Data Analyst six steps process to solve the required Business task.
+
+## Sep 1 Ask
+
+## Defining Business Goal
+
+Moreno has set a clear goal: Design marketing strategies aimed at converting casual riders into annual members.
+In order to achieve this goal, I have been tasked to understand and Analyze “How do annual members and casual riders use Cyclistic bikes differently
+
+
+## Business Question
+
+How do annual members and casual riders use Cyclist bikes differently?
+
+The questions that need to be answered are:
+
+- How do annual members and casual riders use Cyclistic bikes differently?
+
+* Why would casual riders buy Cyclistic annual memberships?
+
+* How can Cyclistic use digital media to influence casual riders to become members?
+
+
+
+## Key Stakeholders 
+
+- Lily Moreno: Director of Marketing and manager. Moreno is responsible for the development of campaigns and initiatives to promote the bike-share program
+
+- Cyclistic Executive team: The notoriously detail-oriented executive team will decide whether to approve the recommended marketing program.
+
+
+## Step 2 Prepare Data
+
+## Data Description 
+
+I will be using cyclistic’s historical trip data to analyze and identify trends and patterns in order to be able to answer the business questions. The datasets have a different name because cyclistic is a fictional company. For the purpose of this case study, I will be using the previous 11 months (December 2021-March 2021, May 2022-November 2022) of cyclistic trip data.
+
+## Reliability, Licensing, Privacy
+
+- Reliability: the data is reliable, credible, current without any bias as it is a real time data of a company and the dataset is of recent months.
+- Licensing: the data has been made available by Motivate International Inc. under this license
+- Privacy: the data is stored in an AWS portal and is an open dataset
+
+
+
+## Process Data
+
+## Tools Used
+
+- Excel Spreadsheet: I used excel spreadsheet to first open and familiarize myself with the data after downloading it. 
+
+- R Programming Language: I used R Programming language to clean, manipulate, Analyze and Visualize the data
+
+
+## Setting up my envrionment 
+
+```{r}
+library(tidyverse)
+```
+```{r}
+library(forcats)
+```
+```{r}
+library(lubridate)
+```
+```{r}
+library(ggplot2)
+```
+```{r}
+library(dplyr)
+```
+```{r}
+library(janitor)
+```
+```{r}
+library(skimr)
+```
+```{r}
+library(scales) #For scales during plotting 
+```
+```{r}
+library(readr)
+```
+
+## Importing data to Rstudio (csv files)
+
+```{r}
+dec_21 <- read.csv("202112-divvy-tripdata.csv", quote = "\"", skipNul = TRUE )
+jan_22 <- read.csv("202201-divvy-tripdata.csv", quote = "\"", skipNul = TRUE)
+feb_22 <- read.csv("202202-divvy-tripdata.csv", quote = "\"", skipNul = TRUE)
+mar_22 <- read.csv("202203-divvy-tripdata.csv", quote = "\"", skipNul = TRUE)
+may_22 <- read.csv("202205-divvy-tripdata.csv", quote = "\"", skipNul = TRUE)
+jun_22 <- read.csv("202206-divvy-tripdata.csv", quote = "\"", skipNul = TRUE)
+jul_22 <- read.csv("202207-divvy-tripdata.csv", quote = "\"", skipNul = TRUE)
+aug_22 <- read.csv("202208-divvy-tripdata.csv", quote = "\"", skipNul = TRUE)
+sep_22 <- read.csv("202209-divvy-tripdata.csv", quote = "\"", skipNul = TRUE)
+oct_22 <- read.csv("202210-divvy-tripdata.csv", quote = "\"", skipNul = TRUE)
+nov_22 <- read.csv("202211-divvy-tripdata.csv", quote = "\"", skipNul = TRUE)
+```
+
+##  Convert started_at and ended_at columns to date time data type
+
+```{r}
+dec_21$started_at <- as_datetime(as.character(dec_21$started_at))
+dec_21$ended_at <- as_datetime(as.character(dec_21$ended_at))
+
+jan_22$started_at <- as_datetime(as.character(jan_22$started_at))
+jan_22$ended_at <- as_datetime(as.character(jan_22$ended_at))
+
+feb_22$started_at <- as_datetime(as.character(feb_22$started_at))
+feb_22$ended_at <- as_datetime(as.character(feb_22$ended_at))
+
+mar_22$started_at <- as_datetime(as.character(mar_22$started_at))
+mar_22$ended_at <- as_datetime(as.character(mar_22$ended_at))
+
+may_22$started_at <- as_datetime(as.character(may_22$started_at))
+may_22$ended_at <- as_datetime(as.character(may_22$ended_at))
+
+jun_22$started_at <- as_datetime(as.character(jun_22$started_at))
+jun_22$ended_at <- as_datetime(as.character(jun_22$ended_at))
+
+jul_22$started_at <- as_datetime(as.character(jul_22$started_at))
+jul_22$ended_at <- as_datetime(as.character(jul_22$ended_at))
+
+aug_22$started_at <- as_datetime(as.character(aug_22$started_at))
+aug_22$ended_at <- as_datetime(as.character(aug_22$ended_at))
+
+sep_22$started_at <- as_datetime(as.character(sep_22$started_at))
+sep_22$ended_at <- as_datetime(as.character(sep_22$ended_at))
+
+oct_22$started_at <- as_datetime(as.character(oct_22$started_at))
+oct_22$ended_at <- as_datetime(as.character(oct_22$ended_at))
+
+nov_22$started_at <- as_datetime(as.character(nov_22$started_at))
+nov_22$ended_at <- as_datetime(as.character(nov_22$ended_at))
+```
+## Combine the datasets into one big data frame
+
+```{r}
+trip_data <- bind_rows(dec_21,jan_22,feb_22,mar_22,may_22,jun_22,jul_22,aug_22,sep_22,oct_22,nov_22)
+```
+
+## Inspect your data
+
+```{r}
+# understanding the data
+skim_without_charts(trip_data)
+# check the first 6 rows of the data
+head(trip_data)
+# check the last 6 rows of the data
+tail(trip_data)
+# glimpse through the data
+glimpse(trip_data)
+```
+
+## Remove unnecessary columns
+
+Some columns won’t be needed for the analysis and removing these columns with make our data easier to explore. these columns are:start_lat, end_lat, start_lng, end_lng.
+
+```{r}
+
+trip_data <- trip_data %>%
+  select(-c(start_lat, end_lat, start_lng, end_lng))
+```
+
+## few problems to fix in the dataset
+
+- Some columns have missing values such as: start_station_name, start_station_id, end_station_name, end_station_id.
+- The data can only be aggregated at the ride-level, which is too granular. I want to add some additional columns of data – such as day, hour, month, year – that provide additional opportunities to aggregate the data
+- I will add ride_length column to help calculate the amount time spent by a user on a particular ride.
+- There are some rides where ride_length might show up as negative, and several other rides where Divvy took bikes out of circulation for Quality Control reasons. I will delete these rides as well.
+
+## Add column ride_length to the dataframe
+
+```{r}
+trip_data$ride_length <-
+  difftime(trip_data$ended_at, trip_data$started_at, units = "mins")
+```
+
+## Convert ride_length from Factor to numeric
+
+```{r}
+trip_data$ride_length <- as.numeric(as.character(trip_data$ride_length))
+
+#Checks if it has converted
+is.numeric(trip_data$ride_length)
+```
+
+## Add new columns date, month, hour, day, year, day_of_week
+
+This will allow the aggregation of ride data for each month, day,hour or year
+```{r}
+trip_data$date <- as.Date(trip_data$started_at)
+trip_data$hour <- as.numeric(format(trip_data$started_at, "%H"))
+trip_data$month <- format(as.Date(trip_data$date, format="%d/%m/%Y"),"%m")
+trip_data$day <- format(as.Date(trip_data$date), "%d")
+trip_data$year <- format(as.Date(trip_data$date), "%Y")
+trip_data$day_of_week <- format(as.Date(trip_data$date), "%A")
+```
+##  Checking the structure of the data frame to see the added columns
+
+```{r}
+str(trip_data)
+```
+
+## check the summary of the modified dataframe
+
+```{r}
+summary(trip_data)
+```
+
+
+##  Check Data for consistency and remove bad data 
+The data frame includes a few hundred entries when bikes were taken out of docks and checked for quality by Divvy or ride_length was negative.(i.e any ride that is less than 1 minute should be considered as a false start and any ride that last longer than 24 hours should be considered abnormal going by the pattern of the data set). 
+I will also create a new version of the data frame “cleantrip_data” since data is being removed
+
+```{r}
+cleantrip_data <- trip_data %>%
+  filter(ride_length >= 1 & ride_length < 60 * 24)
+
+```
+  
+## Inspect the new version data frame 
+```{r}
+summary(cleantrip_data)
+
+```
+
+
+
+## DESCRIPTIVE ANALYSIS
+
+Descriptive analysis on ride_length (all figures in minutes)
+
+```{r}
+mean(cleantrip_data$ride_length) # average ride_length
+median(cleantrip_data$ride_length) #midpoint number in the ascending array of ride lengths
+min(cleantrip_data$ride_length) # shortest ride_length
+max(cleantrip_data$ride_length) # longest ride_length
+# summary of the aggregate
+summary(cleantrip_data$ride_length)
+
+```
+## ANALYSING AND VISUALIZING 
+
+## Analysing Average ride_length by member_casual
+
+```{r}
+cleantrip_data %>%
+  group_by(member_casual) %>%
+  summarise(average_ride_length = mean(ride_length)) #To generate summary statistics 
+```
+
+## Visualizing Average ride_length by member_casual
+
+```{r}
+  cleantrip_data %>%
+  group_by(member_casual) %>%
+  summarise(average_ride_length = mean(ride_length))%>% #To generate summary statistics 
+
+  ggplot() + geom_bar(mapping = aes(x = member_casual, y= average_ride_length,
+                                    fill= member_casual), stat = 'identity', width = 0.3) +
+  labs(title = "Average ride length by User type", x = "member_casual", 
+       y = "Average Ride Length") #telling ggplot2 to skip the aggregation and that we’ll provide the y values
+
+```
+# Key Insights
+- Average ride_length of casual riders is 22.3 minutes while average ride_length of member riders is 12.6
+- We can conclude that average ride_length of casual riders nearly doubles the average ride_length of member riders.
+
+
+## Analyzing average ride length by day_of_week for member_casual
+
+```{r}
+cleantrip_data%>%
+  group_by(member_casual, day_of_week) %>%
+  summarise(number_of_rides = n(), average_ride_length = mean(ride_length)) %>%
+   arrange(member_casual, day_of_week)
+```
+
+## Visualizing average ride length for member_casual by day_of_week
+
+```{r}
+cleantrip_data <- cleantrip_data %>%
+  mutate(day_of_week =factor(day_of_week, levels = c("Sunday", "Monday", "Tuesday", 
+                                                     "Wednesday", "Thursday", "Friday", 
+                                                     "Saturday")))
+cleantrip_data %>%
+  group_by(member_casual, day_of_week) %>%
+  summarise(number_of_rides = n(), average_ride_length = mean(ride_length)) %>%
+  ggplot(aes(x = day_of_week, y = average_ride_length, fill = member_casual)) +
+  geom_col(position = "dodge")+
+  labs(title = "Average ride length for member_casual by day_of_week",
+       x = "day_of_week", y= "Average_ride_length")
+
+## `summarise()` has grouped output by 'member_casual'. You can override using the
+## `.groups` argument.
+```
+# Key Insights
+
+- Casual riders and member riders tend to take longer rides on weekends than on weekdays.
+
+## Analyzing average ride length by day_of_week for member_casual
+
+```{r}
+cleantrip_data %>%
+  group_by(member_casual, month= lubridate::floor_date(date, 'month'))%>%
+  summarise(number_of_rides = n(), average_ride_length = mean(ride_length)) %>%
+  arrange(member_casual, month)
+## `summarise()` has grouped output by 'member_casual'. You can override using the
+## `.groups` argument.
+```
+
+## Visualizing average ride length for member_casual by month
+
+```{r}
+cleantrip_data <- cleantrip_data %>%
+  mutate(month =factor(month, levels = c("Dec21", "Jan",
+                                         "Feb","Mar","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec")))
+cleantrip_data %>%
+  group_by(member_casual, month= lubridate::floor_date(date, 'month'))%>%
+  summarise(number_of_rides = n(), average_ride_length = mean(ride_length)) %>%
+  ggplot(aes(x= month, y = average_ride_length, group = member_casual,
+             color = member_casual)) + geom_line(size= 1.1) +
+  geom_point(size= 2.2) + 
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) + ylim(0, NA) +
+  labs(title = "Average ride length for member_casual by month",
+       x = "Month", y= "Average_ride_length") + 
+  scale_x_date(date_breaks = "1 month", date_labels = "%b %Y")
+## `summarise()` has grouped output by 'member_casual'. You can override using the
+## `.groups` argument.
+
+```
+# Key Insights
+
+- Casual riders tend to take longer rides between March and July
+
+- Member riders tend to take longer rides between May and August
+
+## analyzing data for Total number of rides for member_casual and rideable_type
+
+```{r}
+cleantrip_data%>%
+  group_by(member_casual, rideable_type) %>%
+  summarise(number_of_rides = n())
+## `summarise()` has grouped output by 'member_casual'. You can override using the
+## `.groups` argument.
+```
+
+## Visualizing data for Total number of rides for member_casual and rideable_type
+
+```{r}
+
+cleantrip_data %>%
+  group_by(member_casual, rideable_type) %>% 
+  summarise(number_of_rides = n()) %>% 
+  ggplot() + geom_bar(mapping = aes(x=member_casual, y=number_of_rides, 
+                                    fill=rideable_type), stat='identity', width = 0.3) + 
+  scale_y_continuous(labels=label_number(suffix = '', scale = 5.5e-1)) +
+  labs(title = "Total Number Of Rides member_casual And rideable_type",
+       x="Member_Casual", y="Number of rides")
+## `summarise()` has grouped output by 'member_casual'. You can override using the
+## `.groups` argument.
+```
+
+# Key Insights
+
+- Classic bike and Electric bike is popular among casual riders and member riders
+
+- Docked bike is only used by casual riders.
+
+## analyzing data for total number of rides for member_casual by day_of_week
+
+```{r}
+cleantrip_data %>%
+  group_by(member_casual, day_of_week) %>%
+  summarise(number_of_rides = n())%>%
+  arrange(member_casual)
+## `summarise()` has grouped output by 'member_casual'. You can override using the
+## `.groups` argument
+
+```
+
+## Visualizing total number of rides for member_casual by day_of_week
+
+```{r}
+cleantrip_data <- cleantrip_data %>%
+  mutate(day_of_week =factor(day_of_week, levels = c("Sunday", "Monday", "Tuesday", 
+                                               "Wednesday", "Thursday", "Friday", 
+                                               "Saturday")))
+cleantrip_data %>%
+  group_by(member_casual, day_of_week) %>%
+  summarise(number_of_rides = n())%>%
+  ggplot(aes(x= day_of_week, y = number_of_rides, group = member_casual,
+             color = member_casual)) + geom_line(size= 1.1) +
+  geom_point(size= 2.2) + 
+  scale_y_continuous(labels=label_number(suffix = 'K', scale = 1e-3)) +
+  labs(title = "Number Of daily rides for member_casual by day_of week",
+       x = "day_of_week", y= "Number Of rides")
+```
+
+# Key Insights
+
+- casual riders tend to ride bike on weekends while member riders are more active on weekdays
+
+## analyzing data for total number of rides for member_casual by month
+
+```{r}
+cleantrip_data %>%
+  group_by(member_casual, month= lubridate::floor_date(date, 'month'))%>%
+  summarise(number_of_rides = n())%>%
+  arrange(member_casual)
+## `summarise()` has grouped output by 'member_casual'. You can override using the
+## `.groups` argument.
+```
+
+## Visualizing total number of rides for member_casual by month
+
+```{r}
+cleantrip_data %>%
+  group_by(member_casual, month= lubridate::floor_date(date, 'month'))%>%
+  summarise(number_of_rides = n())%>%
+  arrange(member_casual)%>%
+ggplot(aes(x= month, y = number_of_rides, group = member_casual,
+           color = member_casual)) + geom_line(size= 1.1) +
+  geom_point(size= 2.2) + 
+  scale_y_continuous(labels=label_number(suffix = '', scale = 1e-0)) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))  +
+  labs(title = "Number of monthly rides for member_casual",
+                               x = "Month", y= "Number Of rides") +
+  scale_x_date(date_breaks = "1 month", date_labels = "%b %Y")
+
+```
+
+# Key Insights
+
+- casual riders and member riders are more active in June to August 
+
+## Analyzing total number of rides at specific hours of the day for member_casual
+
+```{r}
+cleantrip_data %>%
+  group_by(member_casual, hour) %>%
+  summarise(number_of_rides =n ()) %>%
+  arrange(member_casual)
+
+```
+## Visualizing total number of rides at specific hours of the day for member_casual
+
+```{r}
+cleantrip_data %>%
+  group_by(member_casual, hour) %>%
+  summarise(number_of_rides =n ()) %>%
+  ggplot() + geom_area(mapping = aes(x = hour, y = number_of_rides, 
+  fill = member_casual)) + 
+  scale_y_continuous(labels=label_number(suffix = '', scale = 1.25e-1))+
+  labs(title = "Number of rides for member_casual by time of day",
+       caption = "Morning: 5AM-12PM : (5-12), Afternoon: 12PM-5PM : (12-17),
+       Evening: 5PM-9PM : (17-21), Night: 9PM-5AM : (21-5)",
+       x="Time of day", y="Number of rides")
+```
+
+# Key Insights
+
+- Casual riders are more active between 11am till 7pm, they are most active from 4pm to 5pm
+- Member riders are active between 7am till 9pm, they are most active from 4pm to 5pm.
+
+## Analyzing top 10 start stations for casual users
+
+```{r}
+cleantrip_data %>%
+  filter(start_station_name != "")%>%
+  filter(member_casual == "casual")%>%
+  group_by(start_station_name)%>%
+  summarise(number_of_rides = n())%>%
+  arrange(-number_of_rides) %>%
+  head(10)
+```
+
+## Visualizing top 10 start stations for casual users
+
+```{r}
+cleantrip_data %>%
+  filter(start_station_name != "")%>%
+  filter(member_casual == "casual")%>%
+  group_by(start_station_name)%>%
+  summarise(number_of_rides = n())%>%
+  arrange(-number_of_rides) %>%
+  head(10) %>%
+  mutate(start_station_name= fct_reorder(start_station_name, number_of_rides))%>%
+  ggplot(aes(x= start_station_name, y = number_of_rides)) +
+  geom_segment(aes(x= reorder(start_station_name, number_of_rides),
+                   xend = reorder(start_station_name, number_of_rides),
+                   y= 0, yend = number_of_rides),color = "medium orchid") + 
+  geom_point(color ="dark orchid", size = 4, alpha = 0.6) +
+  theme_light() +
+  coord_flip() +
+  theme(
+    panel.grid.major.y = element_blank(),
+    panel.border = element_blank(),
+    axis.ticks.y = element_blank()) +
+   ggtitle("Top 10 Start stations by casual users") + 
+  labs(x = "Stations", y = "Number Of Rides")
+
+```
+
+## Analyzing top 10 start stations for casual users
+
+```{r}
+cleantrip_data %>%
+  filter(end_station_name != "")%>%
+  filter(member_casual == "casual")%>%
+  group_by(end_station_name)%>%
+  summarise(number_of_rides = n())%>%
+  arrange(-number_of_rides) %>%
+  head(10)
+```
+
+## Visualizing top 10 end stations by casual users
+
+```{r}
+cleantrip_data %>%
+  filter(end_station_name != "")%>%
+  filter(member_casual == "casual")%>%
+  group_by(end_station_name)%>%
+  summarise(number_of_rides = n())%>%
+  arrange(-number_of_rides) %>%
+  head(10) %>%
+  mutate(end_station_name= fct_reorder(end_station_name, number_of_rides))%>%
+  ggplot(aes(x= end_station_name, y = number_of_rides)) +
+  geom_segment(aes(x= reorder(end_station_name, number_of_rides),
+                   xend = reorder(end_station_name, number_of_rides),
+                   y= 0, yend = number_of_rides),color = "medium orchid") + 
+  geom_point(color ="dark orchid", size = 4, alpha = 0.6) +
+  theme_light() +
+  coord_flip() +
+  theme(
+    panel.grid.major.y = element_blank(),
+    panel.border = element_blank(),
+    axis.ticks.y = element_blank()) +
+  ggtitle("Top 10 End Stations by Casual Users") + 
+  labs(x = "Stations", y = "Number Of Rides")
+
+```
+
+##  Analyzing top 10 most common trips made by casual users
+```{r}
+# top 10 trips from start station to end station
+ cleantrip_data %>%
+  filter(start_station_name != "" & end_station_name != "") %>% 
+  mutate(trip = paste(start_station_name, " -- ", end_station_name)) %>% 
+  group_by(trip, member_casual) %>% 
+  summarise(number_of_rides = n()) %>% 
+  arrange(-number_of_rides) %>% 
+  filter(member_casual == "casual") %>%
+  head(10)
+
+```
+
+
+##  Visualizing top 10 most common trips made by casual users
+```{r}
+top_trips <-  cleantrip_data %>%
+  filter(start_station_name != "" & end_station_name != "") %>% 
+  mutate(trip = paste(start_station_name, " -- ", end_station_name)) %>% 
+  group_by(trip, member_casual) %>% 
+  summarise(number_of_rides = n()) %>% 
+  arrange(-number_of_rides) %>% 
+  filter(member_casual == "casual") %>%
+  head(10)
+
+ggplot(top_trips, aes(x = reorder(trip, number_of_rides),
+                            y = number_of_rides)) +
+  geom_segment(aes(
+    x = reorder(trip, number_of_rides),
+    xend = reorder(trip, number_of_rides),
+    y = 0,
+    yend = number_of_rides
+  ), color = "medium orchid") +
+  geom_point(color = "dark orchid",
+             size = 4,
+             alpha = 0.6) +
+  theme_light() +
+  coord_flip() +
+  theme(
+    panel.grid.major.y = element_blank(),
+    panel.border = element_blank(),
+    axis.ticks.y = element_blank() ) +
+  ggtitle("Top 10 most common trips made by Casual Users") + 
+  labs(x = "Trips", y = "Number of Rides")
+
+```
+
+
+## Conclusions
+
+- Casual riders embark on longer rides than to member riders.
+- Classic bike and electric is popular among casual riders and member riders while Docked bike is only used by casual riders
+- Casual riders tend use bikes more on weekends while member riders use bikes more on weekdays and both riders are usually more active from 4pm to 5pm
+-  casual riders and member riders are more active in June to August 
+-Streeter Dr & Grande Ave is the most famous station for casual riders while Kingsbury St & Kinzie St is the most famous for member riders.
+
+
+
+## TOP 3 RECOMMENDTIONS
+
+- The marketing team should offer discounted prices to new annual members on weekends since casual riders are more active on weekends. This should tempt more casual riders into becoming annual members.
+- More Marketing campaigns should be carried out in Streeter Dr & Grande Ave, and millennium Park and Dusable Lake shore Dr & Monroe St to gain maximum engagement from casual riders. These are the most popular stations used by casual riders.
+- The marketing team should set up a competition with interesting prizes to be won for annual members in the month of September, since both casual riders and member riders use the bike more in September than any other month.
+
+
