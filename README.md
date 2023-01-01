@@ -2,7 +2,7 @@
 Capstone project for Google Data Analyst Certification 
 
 # Introduction
-This is a part of of the Google Data Analyst Certification project, that uses R programming to make sene of the bike sharing data provide, and answer the relevant business questions. Here is  link to th R mark down report that contains the code and analysis carried out. 
+This is a part of of the Google Data Analyst Certification project, that uses R programming to make sene of the bike sharing data provide, and answer the relevant business questions. [Here is  link to the R mark down report (https://rpubs.com/samtu34/CyclistProject) that contains the code and analysis carried out. ]
 
 # How to use
 
